@@ -4,7 +4,7 @@
     <test name = "positiveSearchTest">
         <groups>
             <run>
-                <include name="searching"/>
+                <include name="Recipes Webpage"/>
             </run>
         </groups>
 
