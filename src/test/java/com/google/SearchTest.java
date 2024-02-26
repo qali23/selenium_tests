@@ -1,9 +1,6 @@
 package com.google;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -290,6 +287,7 @@ public class SearchTest {
 
         sleep(3000);
     }
+
     @Test(dependsOnMethods = { "newDishSection", "newDishLink" }, groups = { "Recipes Webpage" })
     public void multipleNewDish() {
         //open test page
@@ -315,6 +313,64 @@ public class SearchTest {
         }
         sleep(3000);
     }
+
+    public void addChef(WebElement dishNameInput, WebElement recipeInput, WebElement submitButton){
+        dishNameInput.sendKeys("Rick-are-Dough");
+        recipeInput.sendKeys("Shires");
+        submitButton.click();
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+        sleep(3000);
+        sleep(3000);
+    }
+    @Test(groups = { "Recipes Webpage" })
+    public void newChef() {
+        //open test page
+        String url = "http://localhost:3000/chefs";
+        driver.get(url);
+        Actions actions = new Actions(driver);
+
+        //Check if new recipe is added successfully
+        WebElement dishNameInput = driver.findElement(By.id("firstName"));
+        WebElement recipeInput = driver.findElement(By.id("LastName"));
+        WebElement submitButton = driver.findElement(By.id("new_actor_submit_button"));
+        addChef(dishNameInput,recipeInput,submitButton);
+    }
+
+    @Test(groups = { "Recipes Webpage" }, dependsOnMethods = {"newChef"})
+    public void multipleNewChefSameInstance() {
+        //open test page
+        String url = "http://localhost:3000/chefs";
+        driver.get(url);
+        Actions actions = new Actions(driver);
+
+        //Check if new recipe is added successfully
+        WebElement dishNameInput = driver.findElement(By.id("firstName"));
+        WebElement recipeInput = driver.findElement(By.id("LastName"));
+        WebElement submitButton = driver.findElement(By.id("new_actor_submit_button"));
+
+        for (int i =0; i<5; i++){
+            addChef(dishNameInput, recipeInput, submitButton);
+            //Text fields are not cleared between inputs - helps distinguish between iterations
+        }
+    }
+
+    @Test(groups = { "Recipes Webpage" }, dependsOnMethods = {"newChef"})
+    public void multipleNewChefDifferentInstances() {
+        for (int i =0; i<5; i++){
+            String url = "http://localhost:3000/chefs";
+            driver.get(url);
+            Actions actions = new Actions(driver);
+
+            //Check if new recipe is added successfully
+            WebElement dishNameInput = driver.findElement(By.id("firstName"));
+            WebElement recipeInput = driver.findElement(By.id("LastName"));
+            WebElement submitButton = driver.findElement(By.id("new_actor_submit_button"));
+            addChef(dishNameInput, recipeInput, submitButton);
+            //Text fields are not cleared between inputs - helps distinguish between iterations
+        }
+    }
+
 
     @AfterMethod(alwaysRun = true)
     private void tearDown(){
