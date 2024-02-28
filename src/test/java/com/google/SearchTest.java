@@ -372,6 +372,113 @@ public class SearchTest {
     }
 
 
+
+
+
+
+    @Test(groups = { "Sakila" })
+    public void FilmsAndActorsHomepage(){
+        //open test page
+        String url = "http://localhost:3000/homepage";
+        driver.get(url);
+        Actions actions = new Actions(driver);
+
+        //Hover mouse over image
+        WebElement homepageLink = driver.findElement(By.id("homepage"));
+        homepageLink.click();
+
+        String currentUrl = driver.getCurrentUrl();
+        Assert.assertEquals(currentUrl, "http://localhost:3000/homepage", "Link not working properly");
+
+        sleep(3000);
+    }
+
+    @Test(groups = { "Sakila" })
+    public void ActorsPage(){
+        //open test page
+        String url = "http://localhost:3000/homepage";
+        driver.get(url);
+        Actions actions = new Actions(driver);
+
+        //Hover mouse over image
+        WebElement actorsLink = driver.findElement(By.id("actors"));
+        actorsLink.click();
+
+        String currentUrl = driver.getCurrentUrl();
+        Assert.assertEquals(currentUrl, "http://localhost:3000/actors", "Link not working properly");
+
+        sleep(3000);
+    }
+
+    @Test(groups = { "Sakila" })
+    public void FilmsPage(){
+        //open test page
+        String url = "http://localhost:3000/homepage";
+        driver.get(url);
+        Actions actions = new Actions(driver);
+
+        //Hover mouse over image
+        WebElement filmsLink = driver.findElement(By.id("films"));
+        filmsLink.click();
+
+        String currentUrl = driver.getCurrentUrl();
+        Assert.assertEquals(currentUrl, "http://localhost:3000/films", "Link not working properly");
+
+        sleep(3000);
+    }
+
+    @Test(groups = { "Sakila" })
+    public void newFilm() {
+        //open test page
+        String url = "http://localhost:3000/films";
+        driver.get(url);
+        Actions actions = new Actions(driver);
+
+        //Check if new film is added successfully
+        WebElement dishNameInput = driver.findElement(By.id("title"));
+        dishNameInput.sendKeys("The Batman");
+        WebElement recipeInput = driver.findElement(By.id("description"));
+        recipeInput.sendKeys("Billionare Bruce Wayne seeks purpose after witnessing the murder of his parents. He vows to fight crime for the rest of his life refusing to kill while keeping gotham safe.");
+        WebElement submitButton = driver.findElement(By.id("new_film_submit_button"));
+        submitButton.click();
+
+        sleep(3000);
+        sleep(3000);
+        sleep(3000);
+        sleep(3000);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
+        Assert.assertNotNull(driver.findElement(By.xpath("//ul[@id='filmNames']//h2[.='The Batman ']")));
+        sleep(3000);
+    }
+
+    @Test(groups = { "Sakila" }, dependsOnMethods = {"newFilm"})
+    public void deleteFilm() {
+        //open test page
+        String url = "http://localhost:3000/films";
+        driver.get(url);
+        Actions actions = new Actions(driver);
+
+        //Check if new film is added successfully
+        WebElement dishNameInput = driver.findElement(By.id("title"));
+        dishNameInput.sendKeys("The Batman");
+        WebElement recipeInput = driver.findElement(By.id("description"));
+        recipeInput.sendKeys("Billionare Bruce Wayne seeks purpose after witnessing the murder of his parents. He vows to fight crime for the rest of his life refusing to kill while keeping gotham safe.");
+        WebElement deleteButton = driver.findElement(By.id("delete_film_submit_button"));
+        deleteButton.click();
+
+        sleep(3000);
+        sleep(3000);
+        sleep(3000);
+        sleep(3000);
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
+        assert driver.findElements(By.xpath("//ul[@id='filmNames']//h2[.='The Batman ']")).isEmpty();
+        sleep(3000);
+    }
+
     @AfterMethod(alwaysRun = true)
     private void tearDown(){
         //close browser
